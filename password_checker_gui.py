@@ -546,8 +546,7 @@ class PasswordCheckerGUI(tk.Tk):
         for s in suggestions:
             label, _ = evaluate_password(s)
             self.create_results.insert(tk.END, f"{s}  -> {label}\n")
-        self.create_results.config(state="disabled")
-
+        self.create_results.config(state='disabled')
 
 
 
@@ -592,13 +591,14 @@ class PasswordCheckerGUI(tk.Tk):
             is_personal, found = False, []
         details['is_personal'] = is_personal
         details['personal_matches'] = found
+        # If the password is a top-common password, mark as Weak (highest priority).
+        if details.get('is_common'):
+            label = "Weak"
         # If personal info is found: warn and mark as MEDIUM per request.
-        if is_personal:
-            matches_text = ", ".join(found) if found else "personal data"
-            # Show warning inline in details; do not pop up a modal per user's request
+        elif is_personal:
             label = "Medium"
         else:
-            # If no personal info, treat as Strong per user's instruction
+            # If no personal info and not common, follow previous preference to treat as Strong
             label = "Strong"
 
         # color mapping: Weak->orange, Medium->yellow, Strong->green
